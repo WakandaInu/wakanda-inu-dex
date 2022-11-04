@@ -160,6 +160,9 @@ export const getIfoV2Contract = (address: string, signer?: Signer | Provider) =>
 export const getIfoV3Contract = (address: string, signer?: Signer | Provider) => {
   return getContract(ifoV3Abi, address, signer)
 }
+export const getIfoV5Contract = (address: string, signer?: Signer | Provider) => {
+  return getContract(ifoV5Abi, address, signer)
+}
 export const getSouschefContract = (id: number, signer?: Signer | Provider) => {
   const config = poolsConfig.find((pool) => pool.sousId === id)
   const abi = config.poolCategory === PoolCategory.BINANCE ? sousChefBnb : sousChef

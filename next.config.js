@@ -154,12 +154,12 @@ const config = {
       },
       {
         source: '/ifo',
-        destination: '/404',
+        destination: '/ifo',
         permanent: true,
       },
       {
         source: '/ifo/history',
-        destination: '/404',
+        destination: '/ifo',
         permanent: true,
       },
       {

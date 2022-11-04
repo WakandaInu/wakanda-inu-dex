@@ -99,7 +99,7 @@ const ContributeModal: React.FC<Props> = ({
   const raisingTokenContractApprover = useERC20(currency.address)
   const { t } = useTranslation()
   const valueWithTokenDecimals = new BigNumber(value).times(DEFAULT_TOKEN_DECIMAL)
-  const label = currency === bscTokens.cake ? t('Max. CAKE entry') : t('Max. token entry')
+  const label = currency === bscTokens.wkd ? t('Max. CAKE entry') : t('Max. token entry')
 
   const { isApproving, isApproved, isConfirmed, isConfirming, handleApprove, handleConfirm } =
     useApproveConfirmTransaction({
@@ -137,7 +137,7 @@ const ContributeModal: React.FC<Props> = ({
 
   // in v3 max token entry is based on ifo credit and hard cap limit per user minus amount already committed
   const maximumTokenEntry = useMemo(() => {
-    if (!creditLeft || (ifo.version >= 3.1 && poolId === PoolIds.poolBasic)) {
+    if (!creditLeft || (poolId === PoolIds.poolBasic)) {
       return limitPerUserInLP.minus(amountTokenCommittedInLP)
     }
     if (limitPerUserInLP.isGreaterThan(0)) {

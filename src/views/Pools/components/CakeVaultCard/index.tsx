@@ -1,4 +1,4 @@
-import { Box, CardBody, CardProps, Flex, Text, TokenPairImage } from '@pancakeswap/uikit'
+import { Box, Button, CardBody, CardProps, Flex, Text, TokenPairImage, Input } from '@pancakeswap/uikit'
 import { useWeb3React } from '@web3-react/core'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import { FlexGap } from 'components/Layout/Flex'
@@ -40,115 +40,25 @@ interface CakeVaultDetailProps {
   performanceFeeAsDecimal: number
 }
 
-export const CakeVaultDetail: React.FC<CakeVaultDetailProps> = ({
-  isLoading = false,
-  account,
-  pool,
-  vaultPool,
-  accountHasSharesStaked,
-  showICake,
-  performanceFeeAsDecimal,
-  defaultFooterExpanded,
-}) => {
-  const { t } = useTranslation()
 
-  return (
-    <>
-      <StyledCardBody isLoading={isLoading}>
-        {account && pool.vaultKey === VaultKey.CakeVault && (
-          <VaultPositionTagWithLabel userData={(vaultPool as DeserializedLockedCakeVault).userData} />
-        )}
-        {account &&
-        pool.vaultKey === VaultKey.CakeVault &&
-        (vaultPool as DeserializedLockedCakeVault).userData.locked ? (
-          <LockedStakingApy
-            userData={(vaultPool as DeserializedLockedCakeVault).userData}
-            stakingToken={pool?.stakingToken}
-            stakingTokenBalance={pool?.userData?.stakingTokenBalance}
-            showICake={showICake}
-          />
-        ) : (
-          <>
-            <StakingApy pool={pool} />
-            <FlexGap mt="16px" gap="24px" flexDirection={accountHasSharesStaked ? 'column-reverse' : 'column'}>
-              <Box>
-                {account && (
-                  <Box mb="8px">
-                    <UnstakingFeeCountdownRow vaultKey={pool.vaultKey} />
-                  </Box>
-                )}
-                <RecentCakeProfitRow pool={pool} />
-              </Box>
-              <Flex flexDirection="column">
-                {account ? (
-                  <VaultCardActions
-                    pool={pool}
-                    accountHasSharesStaked={accountHasSharesStaked}
-                    isLoading={isLoading}
-                    performanceFee={performanceFeeAsDecimal}
-                  />
-                ) : (
-                  <>
-                    <Text mb="10px" textTransform="uppercase" fontSize="12px" color="textSubtle" bold>
-                      {t('Start earning')}
-                    </Text>
-                    <ConnectWalletButton />
-                  </>
-                )}
-              </Flex>
-            </FlexGap>
-          </>
-        )}
-      </StyledCardBody>
-      <CardFooter defaultExpanded={defaultFooterExpanded} pool={pool} account={account} />
-    </>
-  )
-}
 
-const CakeVaultCard: React.FC<CakeVaultProps> = ({
-  pool,
-  showStakedOnly,
-  defaultFooterExpanded,
-  showICake = false,
-  ...props
-}) => {
+const CommitTokenCard = () => {
   const { account } = useWeb3React()
-
-  const vaultPool = useVaultPoolByKey(pool.vaultKey)
-
-  const {
-    userData: { userShares, isLoading: isVaultUserDataLoading },
-    fees: { performanceFeeAsDecimal },
-  } = vaultPool
-
-  const accountHasSharesStaked = userShares && userShares.gt(0)
-  const isLoading = !pool.userData || isVaultUserDataLoading
-
-  if (showStakedOnly && !accountHasSharesStaked) {
-    return null
-  }
-
   return (
-    <StyledCard isActive {...props}>
-      <PoolCardHeader isStaking={accountHasSharesStaked}>
-        <PoolCardHeaderTitle
-          title={vaultPoolConfig[pool.vaultKey].name}
-          subTitle={vaultPoolConfig[pool.vaultKey].description}
-        />
-        <TokenPairImage {...vaultPoolConfig[pool.vaultKey].tokenImage} width={64} height={64} />
-      </PoolCardHeader>
-      <CakeVaultDetail
-        isLoading={isLoading}
-        account={account}
-        pool={pool}
-        vaultPool={vaultPool}
-        accountHasSharesStaked={accountHasSharesStaked}
-        showICake={showICake}
-        performanceFeeAsDecimal={performanceFeeAsDecimal}
-        defaultFooterExpanded={defaultFooterExpanded}
-      />
+    <StyledCard>
+      <StyledCardBody isLoading={false}>
+        <h1>Commit Wakanda</h1>
+        {account ? (
+          <>
+            <Input style={{ marginTop: '3rem' }} type="number" />
+            <Button style={{ marginTop: '3rem' }}>Commit WKd</Button>
+          </>
+        ) : null}
+
+        {!account && <ConnectWalletButton style={{ marginTop: '9rem', width:"100%" }} />}
+      </StyledCardBody>
     </StyledCard>
   )
 }
 
-export default CakeVaultCard
+export default CommitTokenCard

@@ -21,14 +21,14 @@ export enum Rounding {
   ROUND_UP,
 }
 
-export const FACTORY_ADDRESS = '0xcA143Ce32Fe78f1f7019d7d551a6402fC5350c73'
+export const FACTORY_ADDRESS = '0x7a869d198ab6a2dcfc5f8a5fd662d5686166c54d'
 
 export const FACTORY_ADDRESS_MAP = {
   [ChainId.BSC]: FACTORY_ADDRESS,
   [ChainId.BSC_TESTNET]: '0xa72559ab977f8d784d2f5eca1ac5af19cc19a6c9',
 }
 
-export const INIT_CODE_HASH = '0x00fb7f630766e6a796048ea87d01acd3068e8ff67d078148a3fa3f4a84f69bd5'
+export const INIT_CODE_HASH = '0xcf967570e4f5dd8a0dc592c7642537d79254839f8f2411bb14f5bd5c2e560bda'
 
 export const INIT_CODE_HASH_MAP = {
   [ChainId.BSC]: INIT_CODE_HASH,

@@ -112,7 +112,7 @@ const IfoAchievement: React.FC<Props> = ({ ifo, publicIfoData }) => {
               </InlinePrize>
             </Text>
           </Flex>
-          {publicIfoData.currencyPriceInUSD.gt(0) ? (
+          {publicIfoData.currencyPriceInUSD?.gt(0) ? (
             <Text color="textSubtle" fontSize="12px">
               {t('Commit ~%amount% %symbol% in total to earn!', {
                 amount: minLpForAchievement,

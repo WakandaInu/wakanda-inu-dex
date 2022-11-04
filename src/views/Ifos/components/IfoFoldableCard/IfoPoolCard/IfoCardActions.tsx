@@ -43,13 +43,13 @@ const IfoCardActions: React.FC<Props> = ({
     return <ConnectWalletButton width="100%" />
   }
 
-  if (!hasProfile) {
-    return (
-      <Button as={NextLinkFromReactRouter} to={`/profile/${account.toLowerCase()}`} width="100%">
-        {t('Activate your Profile')}
-      </Button>
-    )
-  }
+  // if (!hasProfile) {
+  //   return (
+  //     <Button as={NextLinkFromReactRouter} to={`/profile/${account.toLowerCase()}`} width="100%">
+  //       {t('Activate your Profile')}
+  //     </Button>
+  //   )
+  // }
 
   const needClaim =
     publicIfoData.status === 'finished' &&
@@ -61,12 +61,12 @@ const IfoCardActions: React.FC<Props> = ({
     return <ClaimButton poolId={poolId} ifoVersion={ifo.version} walletIfoData={walletIfoData} />
   }
 
-  if (
-    (enableStatus !== EnableStatus.ENABLED && publicIfoData.status === 'coming_soon') ||
-    (ifo.version >= 3.1 && poolId === PoolIds.poolBasic && !isEligible)
-  ) {
-    return null
-  }
+  // if (
+  //   (enableStatus !== EnableStatus.ENABLED && publicIfoData.status === 'coming_soon') ||
+  //   (ifo.version >= 3.1 && poolId === PoolIds.poolBasic && !isEligible)
+  // ) {
+  //   return null
+  // }
 
   return (
     <>

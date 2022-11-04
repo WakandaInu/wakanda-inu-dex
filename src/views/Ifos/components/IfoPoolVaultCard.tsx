@@ -4,6 +4,7 @@ import CakeVaultCard from 'views/Pools/components/CakeVaultCard'
 import { usePoolsWithVault } from 'state/pools/hooks'
 import IfoPoolVaultCardMobile from './IfoPoolVaultCardMobile'
 import IfoVesting from './IfoVesting/index'
+import CommitTokenCard from 'views/Pools/components/CakeVaultCard'
 
 const IfoPoolVaultCard = () => {
   const { isXl, isLg, isMd, isXs, isSm } = useMatchBreakpointsContext()
@@ -13,12 +14,13 @@ const IfoPoolVaultCard = () => {
 
   return (
     <Flex width="100%" maxWidth={400} alignItems="center" flexDirection="column">
-      {isSmallerThanXl ? (
+      {/* {isSmallerThanXl ? (
         <IfoPoolVaultCardMobile pool={cakePool} />
-      ) : (
-        <CakeVaultCard pool={cakePool} showStakedOnly={false} showICake />
-      )}
-      <IfoVesting pool={cakePool} />
+      ) : ( */}
+        <CommitTokenCard />
+        {/* // <CakeVaultCard pool={cakePool} showStakedOnly={false} showICake /> */}
+      {/* )} */}
+      {/* <IfoVesting pool={cakePool} /> */}
     </Flex>
   )
 }

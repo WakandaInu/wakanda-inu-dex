@@ -15,7 +15,7 @@ export interface IfoCardDetailsProps {
   ifo: Ifo
   publicIfoData: PublicIfoData
   walletIfoData: WalletIfoData
-  isEligible: boolean
+  // isEligible: boolean
 }
 
 export interface FooterEntryProps {
@@ -116,7 +116,7 @@ const MaxTokenEntry = ({ maxToken, ifo, poolId }: { maxToken: number; ifo: Ifo; 
   )
 }
 
-const IfoCardDetails: React.FC<IfoCardDetailsProps> = ({ isEligible, poolId, ifo, publicIfoData, walletIfoData }) => {
+const IfoCardDetails: React.FC<IfoCardDetailsProps> = ({  poolId, ifo, publicIfoData, walletIfoData }) => {
   const { t } = useTranslation()
   const { status, currencyPriceInUSD } = publicIfoData
   const poolCharacteristic = publicIfoData[poolId]
@@ -135,12 +135,7 @@ const IfoCardDetails: React.FC<IfoCardDetailsProps> = ({ isEligible, poolId, ifo
   version3MaxTokens = poolId === PoolIds.poolUnlimited ? walletIfoData.ifoCredit?.creditLeft : version3MaxTokens
 
   /* Format start */
-  const maxLpTokens =
-    (ifo.version === 3 || (ifo.version >= 3.1 && poolId === PoolIds.poolUnlimited)) && ifo.isActive
-      ? version3MaxTokens
-        ? getBalanceNumber(version3MaxTokens, ifo.currency.decimals)
-        : 0
-      : getBalanceNumber(poolCharacteristic.limitPerUserInLP, ifo.currency.decimals)
+  const maxLpTokens = getBalanceNumber(poolCharacteristic.limitPerUserInLP, ifo.currency.decimals)
   const taxRate = `${poolCharacteristic.taxRate}%`
 
   const totalCommittedPercent = poolCharacteristic.totalAmountPool
@@ -148,8 +143,8 @@ const IfoCardDetails: React.FC<IfoCardDetailsProps> = ({ isEligible, poolId, ifo
     .times(100)
     .toFixed(2)
   const totalLPCommitted = getBalanceNumber(poolCharacteristic.totalAmountPool, ifo.currency.decimals)
-  const totalLPCommittedInUSD = currencyPriceInUSD.times(totalLPCommitted)
-  const totalCommitted = `~$${formatNumber(totalLPCommittedInUSD.toNumber(), 0, 0)} (${totalCommittedPercent}%)`
+  const totalLPCommittedInUSD = currencyPriceInUSD?.times(totalLPCommitted)
+  const totalCommitted = `~$${formatNumber(totalLPCommittedInUSD?.toNumber(), 0, 0)} (${totalCommittedPercent}%)`
 
   const sumTaxesOverflow = poolCharacteristic.totalAmountPool.times(poolCharacteristic.taxRate).times(0.01)
   const pricePerTokenWithFeeToOriginalRatio = sumTaxesOverflow
@@ -162,12 +157,12 @@ const IfoCardDetails: React.FC<IfoCardDetailsProps> = ({ isEligible, poolId, ifo
     2,
   )}`
 
-  const maxToken = ifo.version >= 3.1 && poolId === PoolIds.poolBasic && !isEligible ? 0 : maxLpTokens
+  const maxToken =  poolId === PoolIds.poolBasic  ? 0 : maxLpTokens
 
   const tokenEntry = <MaxTokenEntry poolId={poolId} ifo={ifo} maxToken={maxToken} />
 
   const oneWeek = 604800
-  const weeksInSeconds = ifo.version >= 3.2 ? poolCharacteristic.vestingInformation.duration : 0
+  const weeksInSeconds =  poolCharacteristic.vestingInformation?.duration 
   const vestingWeeks = Math.ceil(weeksInSeconds / oneWeek)
 
   /* Format end */
@@ -203,7 +198,7 @@ const IfoCardDetails: React.FC<IfoCardDetailsProps> = ({ isEligible, poolId, ifo
             />
           )}
           <FooterEntry label={t('Total committed:')} value={currencyPriceInUSD.gt(0) ? totalCommitted : null} />
-          {ifo.version >= 3.2 && poolCharacteristic.vestingInformation.percentage > 0 && (
+          {poolCharacteristic.vestingInformation.percentage > 0 && (
             <>
               <FooterEntry
                 label={t('Vested percentage:')}
@@ -236,7 +231,7 @@ const IfoCardDetails: React.FC<IfoCardDetailsProps> = ({ isEligible, poolId, ifo
         <>
           {(poolId === PoolIds.poolBasic || ifo.isActive) && tokenEntry}
           {poolId === PoolIds.poolUnlimited && <FooterEntry label={t('Additional fee:')} value={taxRate} />}
-          <FooterEntry label={t('Total committed:')} value={currencyPriceInUSD.gt(0) ? totalCommitted : null} />
+          <FooterEntry label={t('Total committed:')} value={currencyPriceInUSD?.gt(0) ? totalCommitted : null} />
           <FooterEntry label={t('Funds to raise:')} value={ifo[poolId].raiseAmount} />
           {ifo[poolId].cakeToBurn !== '$0' && <FooterEntry label={t('CAKE to burn:')} value={ifo[poolId].cakeToBurn} />}
           {ifo.version > 1 && (

@@ -18,6 +18,15 @@ const WKD_TESTNET = new Token(
   'https://www.wakandainu.com/',
 )
 
+export const WKD_TESTNET2 = new Token(
+  ChainId.BSC_TESTNET,
+  '0xA165cCECa6B07851b8b0F30e5af08C68383d51Df',
+  9,
+  'WKD',
+  'Wakanda Inu Token',
+  'https://www.wakandainu.com/',
+)
+
 const CAKE_MAINNET = new Token(
   ChainId.BSC,
   '0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82',
@@ -2359,6 +2368,7 @@ export const bscTokens = {
 export const bscTestnetTokens = {
   wbnb: WBNB[ChainId.BSC_TESTNET],
   wkd: WKD_TESTNET,
+  wkd2: WKD_TESTNET2,
   cake: CAKE_TESTNET,
   busd: BUSD_TESTNET,
   syrup: new Token(

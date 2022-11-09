@@ -89,6 +89,7 @@ import zapAbi from 'config/abi/zap.json'
 import iCakeAbi from 'config/abi/iCake.json'
 import ifoV3Abi from 'config/abi/ifoV3.json'
 import cakePredictionsAbi from 'config/abi/cakePredictions.json'
+import wkdCommit from "config/abi/wkdCommit.json"
 
 // Types
 import type {
@@ -160,8 +161,8 @@ export const getIfoV2Contract = (address: string, signer?: Signer | Provider) =>
 export const getIfoV3Contract = (address: string, signer?: Signer | Provider) => {
   return getContract(ifoV3Abi, address, signer)
 }
-export const getIfoV5Contract = (address: string, signer?: Signer | Provider) => {
-  return getContract(ifoV5Abi, address, signer)
+export const getWkdCommitContract = (address: string, signer?: Signer | Provider) => {
+  return getContract(wkdCommit, address, signer)
 }
 export const getSouschefContract = (id: number, signer?: Signer | Provider) => {
   const config = poolsConfig.find((pool) => pool.sousId === id)

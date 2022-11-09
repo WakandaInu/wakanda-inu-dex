@@ -41,6 +41,7 @@ import {
   getCakeFlexibleSideVaultV2Contract,
   getCakePredictionsContract,
   getPredictionsV1Contract,
+  getWkdCommitContract,
 } from 'utils/contractHelpers'
 import { getMulticallAddress, getPredictionsV1Address, getZapAddress } from 'utils/addressHelpers'
 import {
@@ -82,6 +83,17 @@ export const useIfoV1Contract = (address: string) => {
 export const useIfoV2Contract = (address: string) => {
   const { library } = useActiveWeb3React()
   return useMemo(() => getIfoV2Contract(address, library.getSigner()), [address, library])
+}
+
+export const useWkdCommitContract = (address: string, withSignerIfPossible = true) => {
+  const { library, account } = useActiveWeb3React()
+  const signer = useMemo(
+    () => (withSignerIfPossible ? getProviderOrSigner(library, account) : null),
+    [withSignerIfPossible, library, account],
+  )
+  return useMemo(() => getWkdCommitContract(address, signer), [address, signer])
+
+  // useMemo(() => getWkdCommitContract(address, library.getSigner()), [address, library])
 }
 
 export const useIfoV3Contract = (address: string) => {

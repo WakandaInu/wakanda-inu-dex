@@ -58,7 +58,7 @@ const config: (
       href: '/ifo',
       icon: RocketIcon,
       hideSubNav: true,
-      supportChainIds: [ChainId.BSC],
+      // supportChainIds: [ChainId.BSC],
       items: [],
     },
   ].filter((item) => filterItemBySupportChainId(item, chainId))

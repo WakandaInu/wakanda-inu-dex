@@ -15,7 +15,7 @@ export interface IfoCardDetailsProps {
   ifo: Ifo
   publicIfoData: PublicIfoData
   walletIfoData: WalletIfoData
-  // isEligible: boolean
+  isEligible: boolean
 }
 
 export interface FooterEntryProps {

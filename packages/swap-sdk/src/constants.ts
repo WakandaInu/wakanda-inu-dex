@@ -21,7 +21,7 @@ export enum Rounding {
   ROUND_UP,
 }
 
-export const FACTORY_ADDRESS = '0x7a869d198ab6a2dcfc5f8a5fd662d5686166c54d'
+export const FACTORY_ADDRESS = '0x184411227f47f614e49cfab277d0f3bfc65d2316'
 
 export const FACTORY_ADDRESS_MAP = {
   [ChainId.BSC]: FACTORY_ADDRESS,

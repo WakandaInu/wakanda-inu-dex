@@ -7,6 +7,11 @@ import {
   ExpandableLabel,
   ExpandableButton,
   useMatchBreakpointsContext,
+  Text,
+  Flex,
+  Button,
+  Input,
+  Skeleton,
 } from '@pancakeswap/uikit'
 import { useWeb3React } from '@web3-react/core'
 import { ToastDescriptionWithTx } from 'components/Toast'
@@ -14,7 +19,7 @@ import { Ifo, PoolIds } from 'config/constants/types'
 import { useTranslation } from 'contexts/Localization'
 import { useERC20 } from 'hooks/useContract'
 import useToast from 'hooks/useToast'
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { useRouter } from 'next/router'
 import { useCurrentBlock } from 'state/block/hooks'
 import styled from 'styled-components'
@@ -29,6 +34,17 @@ import IfoPoolCard from './IfoPoolCard'
 import { EnableStatus } from './types'
 import { IfoRibbon } from './IfoRibbon'
 import { CardsWrapper } from '../IfoCardStyles'
+import { useLaunchPad } from 'views/Ifos/hooks/useLaunchPad'
+import { useWkdCommit } from 'views/Pools/hooks/useWkdCommit'
+import BigNumber from 'bignumber.js'
+import { SkeletonCardDetails } from './IfoPoolCard/Skeletons'
+import { ethers, utils } from 'ethers'
+import toast from 'react-hot-toast'
+import ConnectWalletButton from 'components/ConnectWalletButton'
+import Details from 'views/Voting/Proposal/Details'
+import { getStatus } from 'views/Ifos/hooks/helpers'
+import ifoActive from "../../../../config/constants/ifo"
+import { formatNumber } from 'utils/useFormatter'
 
 interface IfoFoldableCardProps {
   ifo: Ifo
@@ -246,83 +262,288 @@ const IfoFoldableCard = ({
 }
 
 const IfoCard: React.FC<IfoFoldableCardProps> = ({ ifo, publicIfoData, walletIfoData }) => {
-  const currentBlock = useCurrentBlock()
-  const { fetchIfoData: fetchPublicIfoData, isInitialized: isPublicIfoDataInitialized, secondsUntilEnd } = publicIfoData
-  const {
-    contract,
-    fetchIfoData: fetchWalletIfoData,
-    resetIfoData: resetWalletIfoData,
-    isInitialized: isWalletDataInitialized,
-  } = walletIfoData
-  const [enableStatus, setEnableStatus] = useState(EnableStatus.DISABLED)
-  const { t } = useTranslation()
-  const { account } = useWeb3React()
-  const raisingTokenContract = useERC20(ifo.currency.address, false)
-  // Continue to fetch 2 more minutes / is vesting need get latest data
-  const isRecentlyActive =
-    (publicIfoData.status !== 'finished' ||
-      (publicIfoData.status === 'finished' && secondsUntilEnd >= -120) ||
-      (publicIfoData.status === 'finished' &&
-        ifo.version >= 3.2 &&
-        (publicIfoData[PoolIds.poolBasic].vestingInformation.percentage > 0 ||
-          publicIfoData[PoolIds.poolUnlimited].vestingInformation.percentage > 0))) &&
-    ifo.isActive
-  const onApprove = useIfoApprove(ifo, contract.address)
-  const { toastSuccess } = useToast()
-  const { fetchWithCatchTxError } = useCatchTxError()
-  const isWindowVisible = useIsWindowVisible()
+  const { account, active } = useWeb3React()
+  const { contract, getIfoInfo, depositBnb, getAmountRaised, fetchBlock } = useLaunchPad()
+  const { getUserCommitBalance } = useWkdCommit()
+  const [detail, setDetails] = useState<any>()
+  const [balance, setBalance] = useState(0)
+  const [loading, setLoading] = useState(true)
+  const [amount, setAmount] = useState(0)
+  const [amountRaised, setAmountRaised] = useState('')
+  const { toastError, toastSuccess } = useToast()
+  const [depositing, setDepositing] = useState(false)
+  const [block, setBlock] = useState<any>()
+ 
+const activeIfo = ifoActive.find((ifo)=> ifo.isActive)
 
-  useEffect(() => {
-    if (isRecentlyActive || !isPublicIfoDataInitialized) {
-      fetchPublicIfoData(currentBlock)
-    }
-  }, [isRecentlyActive, isPublicIfoDataInitialized, fetchPublicIfoData, currentBlock])
+console.log("active:", activeIfo)
 
-  useFastRefreshEffect(() => {
-    if (isWindowVisible && (isRecentlyActive || !isWalletDataInitialized)) {
-      if (account) {
-        fetchWalletIfoData()
+  const fetchLaunchPad = async () => {
+    try {
+      const result: any = await getIfoInfo()
+      const format = {
+        offeringAmount: formatNumber(result._offeringAmount.toString() / activeIfo.decimal?? 18),
+        raisingAmount: ethers.utils.formatUnits(result?._raisingAmount),
+        tier1Amount:formatNumber(result?._tier1Amount.toString() / activeIfo.decimal?? 18),
+        tier2Amount: formatNumber(result?._tier2Amount.toString() / activeIfo.decimal?? 18),
+        minimumRequirementTier2: result?._minimumRequirementForTier2.toString(),
+        tier1Percent:  result._tier1Percentage.toString(),
+        tier2Percent: result?._tier2Percentage.toString(),
+        launchShare: result?._launchPercentShare.toString(),
       }
-    }
-
-    if (!account && isWalletDataInitialized) {
-      resetWalletIfoData()
-    }
-  }, [isWindowVisible, account, isRecentlyActive, isWalletDataInitialized, fetchWalletIfoData, resetWalletIfoData])
-
-  const handleApprove = async () => {
-    const receipt = await fetchWithCatchTxError(() => {
-      setEnableStatus(EnableStatus.IS_ENABLING)
-      return onApprove()
-    })
-    if (receipt?.status) {
-      toastSuccess(
-        t('Successfully Enabled!'),
-        <ToastDescriptionWithTx txHash={receipt.transactionHash}>
-          {t('You can now participate in the %symbol% IFO.', { symbol: ifo.token.symbol })}
-        </ToastDescriptionWithTx>,
-      )
-      setEnableStatus(EnableStatus.ENABLED)
-    } else {
-      setEnableStatus(EnableStatus.DISABLED)
+      setDetails(format)
+    } catch (error) {
+      console.log(error)
     }
   }
 
-  useEffect(() => {
-    const checkAllowance = async () => {
-      const approvalRequired = await requiresApproval(raisingTokenContract, account, contract.address)
-      setEnableStatus(approvalRequired ? EnableStatus.DISABLED : EnableStatus.ENABLED)
-    }
 
-    if (account) {
-      checkAllowance()
+  const fetchAmountRaised = async () => {
+    try {
+      const result: any = await getAmountRaised()
+      const format = ethers.utils.formatUnits(result, 'ether')
+      setAmountRaised(format)
+    } catch (error) {
+      console.log(error)
     }
-  }, [account, raisingTokenContract, contract, setEnableStatus])
+  }
+
+  const fetchUserCommit = async () => {
+    try {
+      const result: any = await getUserCommitBalance()
+      setBalance(result?.toString())
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const fetchBlockDetails = async () => {
+    const result = await fetchBlock()
+    const format = {
+      startBlock: result ? Number(result?.startBlock) : 0,
+      endBlock: result ? Number(result?.endBlock) : 0,
+    }
+    setBlock(format)
+  }
+
+  const requirement = balance < detail?.minimumRequirementTier2
+  const tier = requirement ? detail?.tier1Amount : detail?.tier2Amount
+  const tierTitle = requirement ? 'Tier1' : 'Tier2'
+  const tierPercent = requirement ? detail?.tier1Percent : detail?.tier2Percent
+
+  const amountChangeHandler = (event) => {
+    setAmount(() => {
+      return !!event.target.value ? event.target.value : 0
+    })
+  }
+
+  const currentBlock = useCurrentBlock()
+  const status = getStatus(currentBlock, block?.startBlock, block?.endBlock)
+
+  const depositToPool = async () => {
+    // if (!amount) toastError('field cannot be empty')
+    const parsed = amount.toString()
+    if(!!amount === false){
+      toastError("value cannot be empty")
+      return;
+    }
+    setDepositing(true)
+    try {
+      await depositBnb(
+        {
+          value: ethers.utils.parseUnits(parsed, 'gwei'),
+          gasLimit: '500000',
+        },
+        async (res) => {
+          console.log(res)
+          if (!res.hash) {
+            toastError(res.message)
+          }
+          await res.wait()
+          setDepositing(false)
+          fetchData()
+          toastSuccess(`You have successfully deposited ${amount}`)
+        },
+      )
+    } catch (error: any) {
+      setDepositing(false)
+      toastError(error.message)
+    }
+  }
+
+ async function fetchData(){
+  try {
+   await Promise.all([fetchLaunchPad(),fetchUserCommit(),fetchAmountRaised(),fetchBlockDetails()])
+  } catch (error) {
+    
+  }finally{
+    setLoading(false)
+  }
+  }
+
+  useEffect(() => {
+  fetchData()
+  }, [account])
+
+
+
+
+  // console.log(_minimumRequirementForTier2)
+  // const r
+  // const currentBlock = useCurrentBlock()
+  // const { fetchIfoData: fetchPublicIfoData, isInitialized: isPublicIfoDataInitialized, secondsUntilEnd } = publicIfoData
+  // const {
+  //   contract,
+  //   fetchIfoData: fetchWalletIfoData,
+  //   resetIfoData: resetWalletIfoData,
+  //   isInitialized: isWalletDataInitialized,
+  // } = walletIfoData
+  // const [enableStatus, setEnableStatus] = useState(EnableStatus.DISABLED)
+  // const { t } = useTranslation()
+  // const { account } = useWeb3React()
+  // const raisingTokenContract = useERC20(ifo.currency.address, false)
+  // // Continue to fetch 2 more minutes / is vesting need get latest data
+  // const isRecentlyActive =
+  //   (publicIfoData.status !== 'finished' ||
+  //     (publicIfoData.status === 'finished' && secondsUntilEnd >= -120) ||
+  //     (publicIfoData.status === 'finished' &&
+  //       ifo.version >= 3.2 &&
+  //       (publicIfoData[PoolIds.poolBasic].vestingInformation.percentage > 0 ||
+  //         publicIfoData[PoolIds.poolUnlimited].vestingInformation.percentage > 0))) &&
+  //   ifo.isActive
+  // const onApprove = useIfoApprove(ifo, contract.address)
+  // const { toastSuccess } = useToast()
+  // const { fetchWithCatchTxError } = useCatchTxError()
+  // const isWindowVisible = useIsWindowVisible()
+
+  // useEffect(() => {
+  //   if (isRecentlyActive || !isPublicIfoDataInitialized) {
+  //     fetchPublicIfoData(currentBlock)
+  //   }
+  // }, [isRecentlyActive, isPublicIfoDataInitialized, fetchPublicIfoData, currentBlock])
+
+  // useFastRefreshEffect(() => {
+  //   if (isWindowVisible && (isRecentlyActive || !isWalletDataInitialized)) {
+  //     if (account) {
+  //       fetchWalletIfoData()
+  //     }
+  //   }
+
+  //   if (!account && isWalletDataInitialized) {
+  //     resetWalletIfoData()
+  //   }
+  // }, [isWindowVisible, account, isRecentlyActive, isWalletDataInitialized, fetchWalletIfoData, resetWalletIfoData])
+
+  // const handleApprove = async () => {
+  //   const receipt = await fetchWithCatchTxError(() => {
+  //     setEnableStatus(EnableStatus.IS_ENABLING)
+  //     return onApprove()
+  //   })
+  //   if (receipt?.status) {
+  //     toastSuccess(
+  //       t('Successfully Enabled!'),
+  //       <ToastDescriptionWithTx txHash={receipt.transactionHash}>
+  //         {t('You can now participate in the %symbol% IFO.', { symbol: ifo.token.symbol })}
+  //       </ToastDescriptionWithTx>,
+  //     )
+  //     setEnableStatus(EnableStatus.ENABLED)
+  //   } else {
+  //     setEnableStatus(EnableStatus.DISABLED)
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   const checkAllowance = async () => {
+  //     const approvalRequired = await requiresApproval(raisingTokenContract, account, contract.address)
+  //     setEnableStatus(approvalRequired ? EnableStatus.DISABLED : EnableStatus.ENABLED)
+  //   }
+
+  //   if (account) {
+  //     checkAllowance()
+  //   }
+  // }, [account, raisingTokenContract, contract, setEnableStatus])
 
   return (
     <>
-      <StyledCardBody>
-        <CardsWrapper
+      {/* {/* <StyledCardBody> */}
+      <StyledCard style={{ width: '100%' }}>
+        {loading ? <SkeletonCardDetails /> : <></>}
+
+        {loading === false ? (
+          <CardBody>
+            <Text textAlign={'center'} fontSize="20px" fontWeight={400}>{`Status: ${status}`}</Text>
+            <Flex justifyContent={'space-between'} alignItems="center" marginY={'1rem'}>
+              <Text fontSize={'20px'} lineHeight={1}>
+                Tier Percentage
+              </Text>
+
+              <Text fontSize={'20px'} lineHeight={1}>
+                {`${tierPercent} %`}
+              </Text>
+            </Flex>
+            <Flex justifyContent={'space-between'} alignItems="center" marginY={'1rem'}>
+              <Text fontSize={'20px'} lineHeight={1}>
+                Offering Amount
+              </Text>
+
+              <Text fontSize={'20px'} lineHeight={1}>
+                {detail?.offeringAmount}
+              </Text>
+            </Flex>
+            <Flex justifyContent={'space-between'} alignItems="center" marginY={'1rem'}>
+              <Text fontSize={'20px'} lineHeight={1}>
+                Funds to raise
+              </Text>
+
+              <Text fontSize={'20px'} lineHeight={1}>
+                {`${detail?.raisingAmount} Bnb`}
+              </Text>
+            </Flex>
+            <Flex justifyContent={'space-between'} alignItems="center" marginY={'1rem'}>
+              <Text fontSize={'20px'} lineHeight={1}>
+                Raised Amount
+              </Text>
+
+              <Text fontSize={'20px'} lineHeight={1}>
+                {`${amountRaised} Bnb`}
+              </Text>
+            </Flex>
+            <Flex justifyContent={'space-between'} alignItems="center" marginY={'1rem'}>
+              <Text fontSize={'20px'} lineHeight={1}>
+                {tierTitle}
+              </Text>
+
+              <Text fontSize={'20px'} lineHeight={1}>
+                {tier}
+              </Text>
+            </Flex>
+            {!active ? (
+              <ConnectWalletButton width={'100%'} />
+            ) : (
+              <>
+                <Input onChange={amountChangeHandler} type={'number'} style={{ marginTop: '2rem' }} />
+                {status === 'idle' && (
+                  <Button width={'100%'} marginY={'1rem'}>
+                    LaunchPad will start soon
+                  </Button>
+                )}
+                {status === 'live' && (
+                  <Button disabled={depositing === true || +balance <= 0} onClick={depositToPool} width={'100%'} marginY={'1rem'}>
+                    {+balance <=0?"Commit wkd first" : depositing ? 'Depositing' : 'Deposit'} 
+                  </Button>
+                )}
+                {status === 'finished' && (
+                  <Button width={'100%'} marginY={'1rem'}>
+                    Claim Reward
+                  </Button>
+                )}
+              </>
+            )}
+          </CardBody>
+        ) : null}
+      </StyledCard>
+
+      {/* <CardsWrapper
           shouldReverse={ifo.version >= 3.1}
           singleCard={!publicIfoData.poolBasic || !walletIfoData.poolBasic}
         >
@@ -344,8 +565,8 @@ const IfoCard: React.FC<IfoFoldableCardProps> = ({ ifo, publicIfoData, walletIfo
             onApprove={handleApprove}
             enableStatus={enableStatus}
           />
-        </CardsWrapper>
-      </StyledCardBody>
+        </CardsWrapper> */}
+      {/* </StyledCardBody>  */}
     </>
   )
 }

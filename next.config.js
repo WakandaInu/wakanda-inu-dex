@@ -152,11 +152,11 @@ const config = {
         destination: '/liquidity',
         permanent: true,
       },
-      {
-        source: '/ifo',
-        destination: '/ifo',
-        permanent: true,
-      },
+      // {
+      //   source: '/ifo',
+      //   destination: '/ifo',
+      //   permanent: true,
+      // },
       {
         source: '/ifo/history',
         destination: '/ifo',

@@ -42,6 +42,7 @@ import {
   getCakePredictionsContract,
   getPredictionsV1Contract,
   getWkdCommitContract,
+  getLaunchContract
 } from 'utils/contractHelpers'
 import { getMulticallAddress, getPredictionsV1Address, getZapAddress } from 'utils/addressHelpers'
 import {
@@ -92,6 +93,17 @@ export const useWkdCommitContract = (address: string, withSignerIfPossible = tru
     [withSignerIfPossible, library, account],
   )
   return useMemo(() => getWkdCommitContract(address, signer), [address, signer])
+
+  // useMemo(() => getWkdCommitContract(address, library.getSigner()), [address, library])
+}
+
+export const useLaunchPadContract = (address: string, withSignerIfPossible = true) => {
+  const { library, account } = useActiveWeb3React()
+  const signer = useMemo(
+    () => (withSignerIfPossible ? getProviderOrSigner(library, account) : null),
+    [withSignerIfPossible, library, account],
+  )
+  return useMemo(() => getLaunchContract(address, signer), [address, signer])
 
   // useMemo(() => getWkdCommitContract(address, library.getSigner()), [address, library])
 }

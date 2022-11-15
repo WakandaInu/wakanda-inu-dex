@@ -51,6 +51,7 @@ export interface Ifo {
   name: string
   currency: Token
   token: Token
+  decimal?:number
   releaseBlockNumber: number
   articleUrl: string
   campaignId: string

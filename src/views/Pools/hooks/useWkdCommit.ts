@@ -19,16 +19,19 @@ export enum ApprovalState {
 }
 
 export const useWkdCommit = () => {
-  let contract = useWkdCommitContract(bsc.wkdCommit[97])
+  let contract = useWkdCommitContract(bsc.wkdCommit[56])
   const { account, active } = useWeb3React()
   // let token = useERC20(bscTestnetTokens.wkd2.address)
   const commit = useCallback(async (amount, callback) => {
     try {
       await contract.commitWkd(amount).then(callback)
     } catch (error) {
-      console.log('useCommit error:', error)
+      throw error
+      // console.log(error)
     }
   }, [])
+
+
 // To fetch user commit balance to know which pool they can participate in
   const getUserCommitBalance = useCallback(async () => {
     try {

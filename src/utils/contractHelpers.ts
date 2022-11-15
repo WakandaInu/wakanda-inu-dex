@@ -90,7 +90,7 @@ import iCakeAbi from 'config/abi/iCake.json'
 import ifoV3Abi from 'config/abi/ifoV3.json'
 import cakePredictionsAbi from 'config/abi/cakePredictions.json'
 import wkdCommit from "config/abi/wkdCommit.json"
-
+import launchPad from "config/abi/launchpad.json"
 // Types
 import type {
   ChainlinkOracle,
@@ -164,6 +164,10 @@ export const getIfoV3Contract = (address: string, signer?: Signer | Provider) =>
 export const getWkdCommitContract = (address: string, signer?: Signer | Provider) => {
   return getContract(wkdCommit, address, signer)
 }
+export const getLaunchContract = (address: string, signer?: Signer | Provider) => {
+  return getContract(launchPad, address, signer)
+}
+
 export const getSouschefContract = (id: number, signer?: Signer | Provider) => {
   const config = poolsConfig.find((pool) => pool.sousId === id)
   const abi = config.poolCategory === PoolCategory.BINANCE ? sousChefBnb : sousChef

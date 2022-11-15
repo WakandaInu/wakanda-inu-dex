@@ -20,7 +20,7 @@ const WKD_TESTNET = new Token(
 
 export const WKD_TESTNET2 = new Token(
   ChainId.BSC_TESTNET,
-  '0xA165cCECa6B07851b8b0F30e5af08C68383d51Df',
+  '0xA119Da38A1CCf3FD08ac2a69428eEA6F787Bd211',
   9,
   'WKD',
   'Wakanda Inu Token',
@@ -2357,7 +2357,7 @@ export const bscTokens = {
   ),
   peel: new Token(
     ChainId.BSC,
-    '0x734548a9e43d2D564600b1B2ed5bE9C2b911c6aB',
+    '0x39ABFcb2FcAAE1787a22C6ac3Dd4501d7D3c16b0',
     18,
     'PEEL',
     'Meta Apes Peel',

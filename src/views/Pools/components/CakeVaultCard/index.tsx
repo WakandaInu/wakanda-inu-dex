@@ -183,8 +183,8 @@ const CommitTokenCard = () => {
   const token = useCurrency(WKD_TESTNET2?.address)
   const parsed = tryParseAmount(amount.toString(), token)
   const commitAmount = parseUnits(amount.toString(), 9)
-  const [approvalCommit, approve] = useApproveCallback(parsed, bsc.wkdCommit[97])
-
+  const [approvalCommit, approve] = useApproveCallback(parsed, bsc.wkdCommit[56])
+  console.log('approval status:', approvalCommit)
   const commitTokenHandler = async () => {
     if (!amount) toastError('field cannot be empty')
     setCommitting(true)
@@ -211,7 +211,7 @@ const CommitTokenCard = () => {
         {account ? (
           <>
             <Input onChange={amountChangeHandler} style={{ marginTop: '3rem' }} type="number" />
-            {approvalCommit === ApprovalState.UNKNOWN || approvalCommit === ApprovalState.PENDING ? (
+            {approvalCommit === ApprovalState.NOT_APPROVED || approvalCommit === ApprovalState.PENDING ? (
               <Button style={{ marginTop: '3rem' }} onClick={approve}>
                 {approvalCommit === ApprovalState.PENDING ? 'Approving' : 'Approve'}
               </Button>

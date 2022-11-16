@@ -15,7 +15,7 @@ import {
   priceWkdFromPidSelector,
   makeBusdPriceFromPidSelector,
   makeUserFarmFromPidSelector,
-  // makeLpTokenPriceFromLpSymbolSelector,
+  makeLpTokenPriceFromLpSymbolSelector,
   makeFarmFromPidSelector,
 } from './selectors'
 
@@ -95,10 +95,10 @@ export const useBusdPriceFromPid = (pid: number): BigNumber => {
   return useSelector(busdPriceFromPid)
 }
 
-// export const useLpTokenPrice = (symbol: string) => {
-//   const lpTokenPriceFromLpSymbol = useMemo(() => makeLpTokenPriceFromLpSymbolSelector(symbol), [symbol])
-//   return useSelector(lpTokenPriceFromLpSymbol)
-// }
+export const useLpTokenPrice = (symbol: string) => {
+  const lpTokenPriceFromLpSymbol = useMemo(() => makeLpTokenPriceFromLpSymbolSelector(symbol), [symbol])
+  return useSelector(lpTokenPriceFromLpSymbol)
+}
 
 /**
  * @@deprecated use the BUSD hook in /hooks

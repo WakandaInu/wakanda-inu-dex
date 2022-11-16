@@ -9,9 +9,9 @@ import { useProfile } from 'state/profile/hooks'
 import useCriterias from 'views/Ifos/hooks/v3/useCriterias'
 import { PublicIfoData, WalletIfoData } from 'views/Ifos/types'
 import { EnableStatus, CardConfigReturn } from '../types'
-import IfoCardTokens from './IfoCardTokens'
+// import IfoCardTokens from './IfoCardTokens'
 import IfoCardActions from './IfoCardActions'
-import IfoCardDetails from './IfoCardDetails'
+// import IfoCardDetails from './IfoCardDetails'
 import IfoVestingCard from './IfoVestingCard'
 
 const StyledCard = styled(Card)`

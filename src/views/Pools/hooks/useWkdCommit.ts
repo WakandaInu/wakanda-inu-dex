@@ -29,7 +29,7 @@ export const useWkdCommit = () => {
       throw error
       // console.log(error)
     }
-  }, [])
+  }, [account,active])
 
 
 // To fetch user commit balance to know which pool they can participate in

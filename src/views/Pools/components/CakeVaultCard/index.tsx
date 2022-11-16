@@ -1,36 +1,22 @@
-import { Box, Button, CardBody, CardProps, Flex, Text, TokenPairImage, Input } from '@pancakeswap/uikit'
-import { useEffect, useRef, useState } from 'react'
+import {  Button, CardBody, CardProps, Input } from '@pancakeswap/uikit'
+import {  useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import ConnectWalletButton from 'components/ConnectWalletButton'
-import { FlexGap } from 'components/Layout/Flex'
-import { vaultPoolConfig } from 'config/constants/pools'
-import { useTranslation } from 'contexts/Localization'
-import { useVaultPoolByKey } from 'state/pools/hooks'
 import { DeserializedPool, VaultKey, DeserializedLockedCakeVault, DeserializedCakeVault } from 'state/types'
 import styled from 'styled-components'
 
-import CardFooter from '../PoolCard/CardFooter'
-import PoolCardHeader, { PoolCardHeaderTitle } from '../PoolCard/PoolCardHeader'
 import { StyledCard } from '../PoolCard/StyledCard'
-import { VaultPositionTagWithLabel } from '../Vault/VaultPositionTag'
-import UnstakingFeeCountdownRow from './UnstakingFeeCountdownRow'
-import RecentCakeProfitRow from './RecentCakeProfitRow'
-import { StakingApy } from './StakingApy'
-import VaultCardActions from './VaultCardActions'
-import LockedStakingApy from '../LockedPool/LockedStakingApy'
 import { ApprovalState, useWkdCommit } from 'views/Pools/hooks/useWkdCommit'
 // import { useApproveWkdCallback } from 'hooks/useApproveCallback'
 import { parseUnits } from '@ethersproject/units'
 import toast from 'react-hot-toast'
 import bsc from '../../../../config/constants/contracts'
-import BigNumber from 'bignumber.js'
-import ApproveConfirmButtons from 'components/ApproveConfirmButtons'
 import useToast from 'hooks/useToast'
 import { useApproveCallback } from 'hooks/useApproveCallback'
 import { useCurrency } from 'hooks/Tokens'
 import tryParseAmount from 'utils/tryParseAmount'
-import { BASES_TO_CHECK_TRADES_AGAINST } from 'config/constants/exchange'
 import { WKD_TESTNET2 } from '../../../../config/constants/tokens'
+import ifoActive from "../../../../config/constants/ifo"
 
 const StyledCardBody = styled(CardBody)<{ isLoading: boolean }>`
   min-height: ${({ isLoading }) => (isLoading ? '0' : '254px')};
@@ -179,12 +165,13 @@ const CommitTokenCard = () => {
       return !!event.target.value ? event.target.value : '0'
     })
   }
+  const activeIfo = ifoActive.find((ifo)=> ifo.isActive)
 
   const token = useCurrency(WKD_TESTNET2?.address)
   const parsed = tryParseAmount(amount.toString(), token)
   const commitAmount = parseUnits(amount.toString(), 9)
   const [approvalCommit, approve] = useApproveCallback(parsed, bsc.wkdCommit[56])
-  console.log('approval status:', approvalCommit)
+
   const commitTokenHandler = async () => {
     if (!amount) toastError('field cannot be empty')
     setCommitting(true)
@@ -216,7 +203,7 @@ const CommitTokenCard = () => {
                 {approvalCommit === ApprovalState.PENDING ? 'Approving' : 'Approve'}
               </Button>
             ) : (
-              <Button onClick={commitTokenHandler} disabled={committing === true} style={{ marginTop: '3rem' }}>
+              <Button onClick={commitTokenHandler} disabled={ !activeIfo?.isActive || committing === true} style={{ marginTop: '3rem' }}>
                 Commit Wkd
               </Button>
             )}

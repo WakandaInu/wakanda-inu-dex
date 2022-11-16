@@ -49,20 +49,23 @@ export interface Ifo {
   isActive: boolean
   address: string
   name: string
-  currency: Token
+  symbol:string,
+  // currency: Token
   token: Token
   decimal?:number
-  releaseBlockNumber: number
+  fundsToRaise:string,
+  offeringAmount:string,
+  // releaseBlockNumber: number
   articleUrl: string
-  campaignId: string
-  tokenOfferingPrice: number
+  // campaignId: string
+  // tokenOfferingPrice: number
   description?: string
   twitterUrl?: string
   telegramUrl?: string
-  version: number
-  vestingTitle?: string
-  [PoolIds.poolBasic]?: IfoPoolInfo
-  [PoolIds.poolUnlimited]: IfoPoolInfo
+  // version: number
+  // vestingTitle?: string
+  // [PoolIds.poolBasic]?: IfoPoolInfo
+  // [PoolIds.poolUnlimited]: IfoPoolInfo
 }
 
 export interface IfoV5 {

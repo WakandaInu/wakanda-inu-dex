@@ -51,6 +51,25 @@ export const useLaunchPad = () => {
     }
   }
 
+  const claimToken = async() =>{
+    if(!active)return;
+    try {
+      await contract.claimToken()
+    } catch (error) {
+      throw error
+    }
+  }
+
+
+  const getClaimedStatus = async(account) =>{
+    try {
+    const result = await contract.hasClaimed(account)
+    return  result
+    } catch (error) {
+     throw error 
+    }
+  }
+
 const address = bsc.test[56]
   const fetchBlock = async() =>{
     const[startBlock, endBlock] = await multicallv2(launchpadabi,[
@@ -73,7 +92,9 @@ const address = bsc.test[56]
     getIfoInfo,
     depositBnb,
     getAmountRaised,
-    fetchBlock
+    fetchBlock,
+    claimToken,
+    getClaimedStatus
     
   }
 }

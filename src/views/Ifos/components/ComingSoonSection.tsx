@@ -4,7 +4,6 @@ import { useTranslation } from 'contexts/Localization'
 import styled from 'styled-components'
 import { PoolIds } from 'config/constants/types'
 
-import { CardsWrapper } from './IfoCardStyles'
 import { StyledCardBody } from './IfoFoldableCard/index'
 import { cardConfig } from './IfoFoldableCard/IfoPoolCard'
 import GenericIfoCard from './IfoFoldableCard/GenericIfoCard'
@@ -21,13 +20,7 @@ const CurveBox = styled(Box)`
 export default function ComingSoonSection() {
   const { t } = useTranslation()
 
-  const basicConfig = useMemo(
-    () =>
-      cardConfig(t, PoolIds.poolBasic, {
-        version: 3.1,
-      }),
-    [t],
-  )
+
 
   const unlimitedConfig = useMemo(
     () =>
@@ -44,17 +37,7 @@ export default function ComingSoonSection() {
         width: '100%',
       }}
     >
-      <CurveBox
-        height={[100, 110, 160, 160]}
-        backgroundImage={[
-          "url('/images/ifos/assets/ifo-coming-soon.png')",
-          "url('/images/ifos/assets/ifo-coming-soon.png')",
-          "url('/images/ifos/assets/ifo-coming-soon-desktop.png')",
-          "url('/images/ifos/assets/ifo-coming-soon-desktop.png')",
-        ]}
-      />
       <StyledCardBody>
-        <CardsWrapper>
           <GenericIfoCard
             title={unlimitedConfig?.title}
             variant={unlimitedConfig?.variant}
@@ -63,27 +46,13 @@ export default function ComingSoonSection() {
               <>
                 <BunnyKnownPlaceholder width={80} mb="16px" />
                 <Text textAlign="center" fontWeight={600}>
-                  {t('Follow our social channels to learn more about the next IFO.')}
+                  {t('Follow our social channels to learn more about the next LaunchPad.')}
                 </Text>
               </>
             }
             action={null}
           />
-          <GenericIfoCard
-            title={basicConfig?.title}
-            variant={basicConfig?.variant}
-            tooltip={basicConfig?.tooltip}
-            content={
-              <>
-                <BunnyPlaceholderIcon width={80} mb="16px" />
-                <Text textAlign="center" fontWeight={600}>
-                  {t('Follow our social channels to learn more about the next IFO.')}
-                </Text>
-              </>
-            }
-            action={null}
-          />
-        </CardsWrapper>
+
       </StyledCardBody>
     </Card>
   )

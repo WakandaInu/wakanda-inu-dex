@@ -5,7 +5,7 @@ import { NextLinkFromReactRouter } from 'components/NextLink'
 import { Ifo, PoolIds } from 'config/constants/types'
 import { WalletIfoData, PublicIfoData } from 'views/Ifos/types'
 import ConnectWalletButton from 'components/ConnectWalletButton'
-import ContributeButton from './ContributeButton'
+// import ContributeButton from './ContributeButton'
 import ClaimButton from './ClaimButton'
 import { SkeletonCardActions } from './Skeletons'
 import { EnableStatus } from '../types'
@@ -57,9 +57,9 @@ const IfoCardActions: React.FC<Props> = ({
     (userPoolCharacteristics.offeringAmountInToken.isGreaterThan(0) ||
       userPoolCharacteristics.refundingAmountInLP.isGreaterThan(0))
 
-  if (needClaim) {
-    return <ClaimButton poolId={poolId} ifoVersion={ifo.version} walletIfoData={walletIfoData} />
-  }
+  // if (needClaim) {
+  //   return <ClaimButton poolId={poolId} ifoVersion={ifo.version} walletIfoData={walletIfoData} />
+  // }
 
   // if (
   //   (enableStatus !== EnableStatus.ENABLED && publicIfoData.status === 'coming_soon') ||
@@ -70,8 +70,8 @@ const IfoCardActions: React.FC<Props> = ({
 
   return (
     <>
-      {(publicIfoData.status === 'live' || publicIfoData.status === 'coming_soon') && (
-        <ContributeButton poolId={poolId} ifo={ifo} publicIfoData={publicIfoData} walletIfoData={walletIfoData} />
+      {(publicIfoData.status === 'live' || publicIfoData.status === 'coming_soon') && (null
+        // <ContributeButton poolId={poolId} ifo={ifo} publicIfoData={publicIfoData} walletIfoData={walletIfoData} />
       )}
     </>
   )

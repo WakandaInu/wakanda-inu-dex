@@ -9,7 +9,7 @@ const ifos: Ifo[] = [
   {
     id: 'peel',
     address: '0x35Bb6Dd4E8C63491057c32621c8cDdE43BabE201',
-    isActive: false,
+    isActive: true,
     name: 'Meta Apes ($PEEL)',
     symbol:"PEEL",
     token: bscTokens.peel,

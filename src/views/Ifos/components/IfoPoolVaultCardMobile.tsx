@@ -16,7 +16,7 @@ import { vaultPoolConfig } from 'config/constants/pools'
 import { DeserializedPool, VaultKey } from 'state/types'
 import { getBalanceNumber } from 'utils/formatBalance'
 import { useConfig } from 'views/Ifos/contexts/IfoContext'
-import { CakeVaultDetail } from 'views/Pools/components/CakeVaultCard'
+// import { CakeVaultDetail } from 'views/Pools/components/CakeVaultCard'
 
 const StyledCardMobile = styled(Card)`
   max-width: 400px;
@@ -76,15 +76,16 @@ const IfoPoolVaultCardMobile: React.FC<IfoPoolVaultCardMobileProps> = ({ pool })
         </Flex>
       </CardHeader>
       {isExpanded && (
-        <CakeVaultDetail
-          showICake
-          isLoading={isLoading}
-          account={account}
-          pool={pool}
-          vaultPool={vaultPool}
-          accountHasSharesStaked={accountHasSharesStaked}
-          performanceFeeAsDecimal={performanceFeeAsDecimal}
-        />
+        null
+        // <CakeVaultDetail
+        //   showICake
+        //   isLoading={isLoading}
+        //   account={account}
+        //   pool={pool}
+        //   vaultPool={vaultPool}
+        //   accountHasSharesStaked={accountHasSharesStaked}
+        //   performanceFeeAsDecimal={performanceFeeAsDecimal}
+        // />
       )}
     </StyledCardMobile>
   )

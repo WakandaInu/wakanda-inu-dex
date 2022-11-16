@@ -12,7 +12,7 @@ import { EnableStatus, CardConfigReturn } from '../types'
 // import IfoCardTokens from './IfoCardTokens'
 import IfoCardActions from './IfoCardActions'
 // import IfoCardDetails from './IfoCardDetails'
-import IfoVestingCard from './IfoVestingCard'
+// import IfoVestingCard from './IfoVestingCard'
 
 const StyledCard = styled(Card)`
   width: 100%;

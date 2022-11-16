@@ -7,7 +7,7 @@ const SoonIfo = () => (
   <IfoContainer
     ifoSection={<ComingSoonSection />}
     ifoSteps={
-      <IfoSteps isLive={false} hasClaimed={false} isCommitted={false} ifoCurrencyAddress={bscTokens.cake.address} />
+      <IfoSteps isLive={false}  />
     }
   />
 )

@@ -106,27 +106,27 @@ export const priceWkdFromPidSelector = createSelector([selectwkdBusdFarm], (wkdB
 export const farmFromLpSymbolSelector = (lpSymbol: string) =>
   createSelector([selectFarmByKey('lpSymbol', lpSymbol)], (farm) => deserializeFarm(farm))
 
-// export const makeLpTokenPriceFromLpSymbolSelector = (lpSymbol: string) =>
-//   createSelector([selectFarmByKey('lpSymbol', lpSymbol)], (farm) => {
-//     let lpTokenPrice = BIG_ZERO
+export const makeLpTokenPriceFromLpSymbolSelector = (lpSymbol: string) =>
+  createSelector([selectFarmByKey('lpSymbol', lpSymbol)], (farm) => {
+    let lpTokenPrice = BIG_ZERO
 
-//     // const lpTotalInQuoteToken = farm.lpTotalInQuoteToken ? new BigNumber(farm.lpTotalInQuoteToken) : BIG_ZERO
-//     const lpTotalSupply = farm.lpTotalSupply ? new BigNumber(farm.lpTotalSupply) : BIG_ZERO
+    const lpTotalInQuoteToken = farm.lpTotalInQuoteToken ? new BigNumber(farm.lpTotalInQuoteToken) : BIG_ZERO
+    const lpTotalSupply = farm.lpTotalSupply ? new BigNumber(farm.lpTotalSupply) : BIG_ZERO
 
-//     if (lpTotalSupply.gt(0) && lpTotalInQuoteToken.gt(0)) {
-//       const farmTokenPriceInUsd = new BigNumber(farm.tokenPriceBusd)
-//       const tokenAmountTotal = farm.tokenAmountTotal ? new BigNumber(farm.tokenAmountTotal) : BIG_ZERO
-//       // Total value of base token in LP
-//       const valueOfBaseTokenInFarm = farmTokenPriceInUsd.times(tokenAmountTotal)
-//       // Double it to get overall value in LP
-//       const overallValueOfAllTokensInFarm = valueOfBaseTokenInFarm.times(2)
-//       // Divide total value of all tokens, by the number of LP tokens
-//       const totalLpTokens = getBalanceAmount(lpTotalSupply)
-//       lpTokenPrice = overallValueOfAllTokensInFarm.div(totalLpTokens)
-//     }
+    if (lpTotalSupply.gt(0) && lpTotalInQuoteToken.gt(0)) {
+      const farmTokenPriceInUsd = new BigNumber(farm.tokenPriceBusd)
+      const tokenAmountTotal = farm.tokenAmountTotal ? new BigNumber(farm.tokenAmountTotal) : BIG_ZERO
+      // Total value of base token in LP
+      const valueOfBaseTokenInFarm = farmTokenPriceInUsd.times(tokenAmountTotal)
+      // Double it to get overall value in LP
+      const overallValueOfAllTokensInFarm = valueOfBaseTokenInFarm.times(2)
+      // Divide total value of all tokens, by the number of LP tokens
+      const totalLpTokens = getBalanceAmount(lpTotalSupply)
+      lpTokenPrice = overallValueOfAllTokensInFarm.div(totalLpTokens)
+    }
 
-//     return lpTokenPrice
-//   })
+    return lpTokenPrice
+  })
 
 export const farmSelector = createSelector(
   (state: State) => state.farms,

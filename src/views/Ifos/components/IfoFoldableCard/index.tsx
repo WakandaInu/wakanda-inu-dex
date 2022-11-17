@@ -311,7 +311,7 @@ const IfoCard = ({ ifo, showtier = true }: { ifo: Ifo; showtier?: boolean }) => 
   const fetchAmountRaised = async () => {
     try {
       const result: any = await getAmountRaised()
-      const format = ethers.utils.formatUnits(result?.toString(), 9)
+      const format = ethers.utils.formatUnits(result?.toString(), 12)
       setAmountRaised(format)
     } catch (error) {
       console.log(error)

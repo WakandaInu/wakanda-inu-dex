@@ -27,7 +27,7 @@ const config = [
   {
     title: <Trans>What's my reward for participating in the Launchpad?</Trans>,
     description: [
-      <Trans>You will get the offering token token in the proportion of your deposits and amount to be shared by your tier</Trans>,
+      <Trans>You will get the offering  token in the proportion of your deposits and amount to be shared by your tier</Trans>,
     ],
   }
 ]

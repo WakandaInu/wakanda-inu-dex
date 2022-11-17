@@ -14,7 +14,7 @@ const ifos: Ifo[] = [
     symbol:"PEEL",
     token: bscTokens.peel,
     decimal:18,
-    fundsToRaise:"2.5 Bnb",
+    fundsToRaise:"2 Bnb",
     offeringAmount:"83333333333333328",
     articleUrl:
       'https://pancakeswap.finance/voting/proposal/bafkreibomj5nilvyckdro7ztmm62syt55dcfnonxs63ji6hm2ijq35lru4',

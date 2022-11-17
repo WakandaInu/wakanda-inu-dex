@@ -1,6 +1,6 @@
 export default {
   wkdCommit: {
-    56: '0xCFaF63238D8907C5c950fBc298e01E031EC36034',
+    56: '0xa89765D1232A41f2Abda2E2d4fa7470002e4089a',
     // 97: '0x2282639b2b645eE512EAcC52634A679b13528753',
   },
   wkdLpPool: {

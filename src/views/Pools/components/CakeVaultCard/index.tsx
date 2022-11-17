@@ -178,7 +178,7 @@ const CommitTokenCard = () => {
       await commit(commitAmount, async (res: any) => {
         if (!res.hash) {
           setCommitting(false)
-          toastError(res.message)
+          toastError(res.data.message)
         }
         await res.wait()
         setCommitting(false)

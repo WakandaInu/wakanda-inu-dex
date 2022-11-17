@@ -287,7 +287,7 @@ const IfoCard = ({ ifo, showtier = true }: { ifo: Ifo; showtier?: boolean }) => 
       const result: any = await getIfoInfo()
       const format = {
         offeringAmount: formatNumber(result._offeringAmount.toString() / activeIfo.decimal ?? 18),
-        raisingAmount: ethers.utils.formatUnits(result?._raisingAmount),
+        raisingAmount: ethers.utils.formatUnits(result?._raisingAmount,8),
         tier1Amount: formatNumber(result?._tier1Amount.toString() / activeIfo.decimal ?? 18),
         tier2Amount: formatNumber(result?._tier2Amount.toString() / activeIfo.decimal ?? 18),
         minimumRequirementTier2: result?._minimumRequirementForTier2.toString(),
@@ -306,11 +306,12 @@ const IfoCard = ({ ifo, showtier = true }: { ifo: Ifo; showtier?: boolean }) => 
     setHasClaimed(result)
   }
 
-
+// changes this to 8
+// parse deposit to 8 too
   const fetchAmountRaised = async () => {
     try {
       const result: any = await getAmountRaised()
-      const format = ethers.utils.formatUnits(result, 'ether')
+      const format = ethers.utils.formatUnits(result?.toString(), 9)
       setAmountRaised(format)
     } catch (error) {
       console.log(error)
@@ -359,7 +360,7 @@ const IfoCard = ({ ifo, showtier = true }: { ifo: Ifo; showtier?: boolean }) => 
     try {
       await depositBnb(
         {
-          value: ethers.utils.parseUnits(parsed, 'gwei'),
+          value: ethers.utils.parseUnits(parsed, "gwei"),
           gasLimit: '500000',
         },
         async (res) => {

@@ -45,7 +45,7 @@ const Step2 = () => {
       </Heading>
       <Text color="textSubtle" small>
         {t(
-          'Your are required to deposit a certain amount of  WKD in the WKDCommit Contract which  is going to be used to classify you in to tier. After that you can now participate in the launchpad with BNB.',
+          'You are required to deposit a certain amount of  WKD in the WKDCommit Contract which  is going to be used to classify you in to tier. After that you can now participate in the launchpad with BNB.',
         )}{' '}
         <br />
       </Text>

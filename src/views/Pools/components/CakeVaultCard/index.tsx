@@ -14,7 +14,7 @@ import useToast from 'hooks/useToast'
 import { useApproveCallback } from 'hooks/useApproveCallback'
 import { useCurrency } from 'hooks/Tokens'
 import tryParseAmount from 'utils/tryParseAmount'
-import { WKD_TESTNET2 } from '../../../../config/constants/tokens'
+import { WAKANDA_MAINET } from '../../../../config/constants/tokens'
 import ifoActive from "../../../../config/constants/ifo"
 
 const StyledCardBody = styled(CardBody)<{ isLoading: boolean }>`
@@ -166,7 +166,7 @@ const CommitTokenCard = () => {
   }
   const activeIfo = ifoActive.find((ifo)=> ifo.isActive)
 
-  const token = useCurrency(WKD_TESTNET2?.address)
+  const token = useCurrency(WAKANDA_MAINET?.address)
   const parsed = tryParseAmount(amount.toString(), token)
   const commitAmount = parseUnits(amount.toString(), 9)
   const [approvalCommit, approve] = useApproveCallback(parsed, bsc.wkdCommit[56])

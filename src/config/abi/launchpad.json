@@ -599,21 +599,6 @@
       },
       {
         "internalType": "uint256",
-        "name": "launchpadStartTime",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "launchpadEndTime",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "totalAmountInPool",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
         "name": "tier1Amount",
         "type": "uint256"
       },
@@ -634,6 +619,19 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "offeringToken",
+    "outputs": [
+      {
+        "internalType": "contract IBEP20",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",

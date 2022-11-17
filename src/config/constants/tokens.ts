@@ -18,6 +18,15 @@ const WKD_TESTNET = new Token(
   'https://www.wakandainu.com/',
 )
 
+export const WAKANDA_MAINET = new Token(
+  ChainId.BSC,
+  '0x5344C20FD242545F31723689662AC12b9556fC3d',
+  9,
+  'WKD',
+  'Wakanda Inu Token',
+  'https://www.wakandainu.com/',
+)
+
 export const WKD_TESTNET2 = new Token(
   ChainId.BSC_TESTNET,
   '0xA119Da38A1CCf3FD08ac2a69428eEA6F787Bd211',

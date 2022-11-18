@@ -115,11 +115,11 @@ const config = {
       //   destination: '/liquidity',
       //   permanent: true,
       // },
-      {
-        source: '/staking',
-        destination: '/pools',
-        permanent: true,
-      },
+      // {
+      //   source: '/staking',
+      //   destination: '/pools',
+      //   permanent: true,
+      // },
       // {
       //   source: '/syrup',
       //   destination: '/pools',
@@ -148,11 +148,11 @@ const config = {
       //   destination: '/farms',
       //   permanent: true,
       // },
-      {
-        source: '/add/:currrency*',
-        destination: '/liquidity',
-        permanent: true,
-      },
+      // {
+      //   source: '/add/:currrency*',
+      //   destination: '/liquidity',
+      //   permanent: true,
+      // },
       // {
       //   source: '/remove/:currrency*',
       //   destination: '/liquidity',

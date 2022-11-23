@@ -42,6 +42,14 @@ export const useWkdCommit = () => {
     }
   }, [active, account])
 
+  const removeWkd = useCallback(async()=>{
+    try {
+      await contract.removeWkd()
+    } catch (error) {
+      throw error
+    }
+  },[account, active])
+
   // const getAllowance = useCallback(async (spender = bsc.wkdCommit[97]) => {
   //   try {
   //     const allowance = await token.allowance(account, spender)
@@ -67,6 +75,7 @@ export const useWkdCommit = () => {
     commit,
     contract,
     getUserCommitBalance,
+    removeWkd
     // getAllowance,
     // approve,
   }

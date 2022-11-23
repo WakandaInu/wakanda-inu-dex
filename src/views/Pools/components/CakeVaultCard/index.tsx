@@ -1,5 +1,5 @@
-import {  Button, CardBody, CardProps, Input } from '@pancakeswap/uikit'
-import {  useState } from 'react'
+import { Button, CardBody, CardProps, Input, Flex, Text } from '@pancakeswap/uikit'
+import { useState } from 'react'
 import { useWeb3React } from '@web3-react/core'
 import ConnectWalletButton from 'components/ConnectWalletButton'
 import { DeserializedPool, VaultKey, DeserializedLockedCakeVault, DeserializedCakeVault } from 'state/types'
@@ -15,7 +15,7 @@ import { useApproveCallback } from 'hooks/useApproveCallback'
 import { useCurrency } from 'hooks/Tokens'
 import tryParseAmount from 'utils/tryParseAmount'
 import { WAKANDA_MAINET } from '../../../../config/constants/tokens'
-import ifoActive from "../../../../config/constants/ifo"
+import ifoActive from '../../../../config/constants/ifo'
 
 const StyledCardBody = styled(CardBody)<{ isLoading: boolean }>`
   min-height: ${({ isLoading }) => (isLoading ? '0' : '254px')};
@@ -155,16 +155,17 @@ interface CakeVaultDetailProps {
 const CommitTokenCard = () => {
   const [amount, setAmount] = useState(0)
   const { account } = useWeb3React()
-  let { commit } = useWkdCommit()
+  let { commit, removeWkd } = useWkdCommit()
   let { toastError, toastSuccess } = useToast()
   const [committing, setCommitting] = useState(false)
+  const [widthdrawing, setWithdrawing] = useState(false)
 
   const amountChangeHandler = (event) => {
     setAmount(() => {
       return !!event.target.value ? event.target.value : '0'
     })
   }
-  const activeIfo = ifoActive.find((ifo)=> ifo.isActive)
+  const activeIfo = ifoActive.find((ifo) => ifo.isActive)
 
   const token = useCurrency(WAKANDA_MAINET?.address)
   const parsed = tryParseAmount(amount.toString(), token)
@@ -190,6 +191,23 @@ const CommitTokenCard = () => {
     }
   }
 
+  const removeWkdHandler = async () => {
+    setWithdrawing(true)
+    try {
+      const response: any = await removeWkd()
+      if (!response?.hash) {
+        toastError(response.data.message)
+        setWithdrawing(false)
+      }
+      await response.wait()
+      setWithdrawing(false)
+      toastSuccess('You have successfully withdraw')
+    } catch (error:any) {
+      setWithdrawing(false)
+      toastError(error?.message)
+    }
+  }
+
   return (
     <StyledCard>
       <StyledCardBody isLoading={false}>
@@ -197,15 +215,25 @@ const CommitTokenCard = () => {
         {account ? (
           <>
             <Input onChange={amountChangeHandler} style={{ marginTop: '3rem' }} type="number" />
-            {approvalCommit === ApprovalState.NOT_APPROVED || approvalCommit === ApprovalState.PENDING ? (
-              <Button style={{ marginTop: '3rem' }} onClick={approve}>
-                {approvalCommit === ApprovalState.PENDING ? 'Approving' : 'Approve'}
-              </Button>
-            ) : (
-              <Button onClick={commitTokenHandler} disabled={ !activeIfo?.isActive || committing === true} style={{ marginTop: '3rem' }}>
-                Commit Wkd
-              </Button>
-            )}
+            <Flex alignItems={'center'}>
+              {approvalCommit === ApprovalState.NOT_APPROVED || approvalCommit === ApprovalState.PENDING ? (
+                <Button style={{ marginTop: '3rem' }} onClick={approve}>
+                  {approvalCommit === ApprovalState.PENDING ? 'Approving' : 'Approve'}
+                </Button>
+              ) : (
+                <Button
+                  onClick={commitTokenHandler}
+                  disabled={!activeIfo?.isActive || committing === true}
+                  style={{ marginTop: '3rem' }}
+                >
+                  Commit Wkd
+                </Button>
+              )}
+              <Button onClick={removeWkdHandler} disabled={widthdrawing === true} style={{ marginTop: '3rem', marginLeft: '.5rem', backgroundColor: '#cd3820' }}>Remove Wkd</Button>
+            </Flex>
+            <Text marginTop={'0.5rem'} fontSize="12px" textAlign={'center'}>
+              Click Remove wkd to withdraw committed wkd
+            </Text>
           </>
         ) : null}
 

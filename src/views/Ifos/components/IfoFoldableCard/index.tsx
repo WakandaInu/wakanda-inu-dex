@@ -232,7 +232,7 @@ const IfoFoldableCard = ({ ifo }) => {
   const [isExpanded, setIsExpanded] = useState(false)
   const wrapperEl = useRef<HTMLDivElement>(null)
   // const ifo = ifoActive.find((ifo) => ifo.isActive)
-console.log('history:',ifo)
+  console.log('history:', ifo)
   useEffect(() => {
     const hash = asPath.split('#')[1]
     if (hash === ifo.id) {
@@ -266,7 +266,7 @@ console.log('history:',ifo)
 
 const IfoCard = ({ ifo, showtier = true }: { ifo: Ifo; showtier?: boolean }) => {
   const { account, active } = useWeb3React()
-  const { getIfoInfo, depositBnb, getAmountRaised, fetchBlock, claimToken,getClaimedStatus } = useLaunchPad()
+  const { getIfoInfo, depositBnb, getAmountRaised, fetchBlock, claimToken, getClaimedStatus } = useLaunchPad()
   const { getUserCommitBalance } = useWkdCommit()
   const [detail, setDetails] = useState<any>()
   const [balance, setBalance] = useState(0)
@@ -287,7 +287,7 @@ const IfoCard = ({ ifo, showtier = true }: { ifo: Ifo; showtier?: boolean }) => 
       const result: any = await getIfoInfo()
       const format = {
         offeringAmount: formatNumber(result._offeringAmount.toString() / activeIfo.decimal ?? 18),
-        raisingAmount: ethers.utils.formatUnits(result?._raisingAmount,8),
+        raisingAmount: ethers.utils.formatUnits(result?._raisingAmount),
         tier1Amount: formatNumber(result?._tier1Amount.toString() / activeIfo.decimal ?? 18),
         tier2Amount: formatNumber(result?._tier2Amount.toString() / activeIfo.decimal ?? 18),
         minimumRequirementTier2: result?._minimumRequirementForTier2.toString(),
@@ -301,17 +301,17 @@ const IfoCard = ({ ifo, showtier = true }: { ifo: Ifo; showtier?: boolean }) => 
     }
   }
 
-  const fetchClaimedStatus = async() =>{
+  const fetchClaimedStatus = async () => {
     const result = await getClaimedStatus(account)
     setHasClaimed(result)
   }
 
-// changes this to 8
-// parse deposit to 8 too
+  // changes this to 8
+  // parse deposit to 8 too
   const fetchAmountRaised = async () => {
     try {
       const result: any = await getAmountRaised()
-      const format = ethers.utils.formatUnits(result?.toString(), 12)
+      const format = ethers.utils.formatEther(result?.toString())
       setAmountRaised(format)
     } catch (error) {
       console.log(error)
@@ -360,7 +360,7 @@ const IfoCard = ({ ifo, showtier = true }: { ifo: Ifo; showtier?: boolean }) => 
     try {
       await depositBnb(
         {
-          value: ethers.utils.parseUnits(parsed, "gwei"),
+          value: ethers.utils.parseEther(parsed),
           gasLimit: '500000',
         },
         async (res) => {
@@ -382,7 +382,13 @@ const IfoCard = ({ ifo, showtier = true }: { ifo: Ifo; showtier?: boolean }) => 
 
   async function fetchData() {
     try {
-      await Promise.all([fetchLaunchPad(), fetchUserCommit(), fetchAmountRaised(), fetchBlockDetails(), fetchClaimedStatus()])
+      await Promise.all([
+        fetchLaunchPad(),
+        fetchUserCommit(),
+        fetchAmountRaised(),
+        fetchBlockDetails(),
+        fetchClaimedStatus(),
+      ])
     } catch (error) {
     } finally {
       setLoading(false)
@@ -446,15 +452,18 @@ const IfoCard = ({ ifo, showtier = true }: { ifo: Ifo; showtier?: boolean }) => 
                 {`${ifo.fundsToRaise}`}
               </Text>
             </Flex>
-            <Flex justifyContent={'space-between'} alignItems="center" marginY={'1rem'}>
-              <Text fontSize={isMobile ? `10px` : '20px'} lineHeight={1}>
-                Raised Amount
-              </Text>
+            {showtier ? (
+              <Flex justifyContent={'space-between'} alignItems="center" marginY={'1rem'}>
+                <Text fontSize={isMobile ? `10px` : '20px'} lineHeight={1}>
+                  Raised Amount
+                </Text>
                 {/* {JSON.stringify(activeIfo)} */}
-              <Text fontSize={isMobile ? `10px` : '20px'} lineHeight={1}>
-                {`${amountRaised ?? 0} Bnb`}
-              </Text>
-            </Flex>
+                <Text fontSize={isMobile ? `10px` : '20px'} lineHeight={1}>
+                  {`${amountRaised ?? 0} Bnb`}
+                </Text>
+              </Flex>
+            ) : null}
+
             {showtier ? (
               <Flex justifyContent={'space-between'} alignItems="center" marginY={'1rem'}>
                 <Text fontSize={isMobile ? `13px` : '20px'} lineHeight={1}>
@@ -489,8 +498,13 @@ const IfoCard = ({ ifo, showtier = true }: { ifo: Ifo; showtier?: boolean }) => 
                   </Button>
                 )}
                 {status === 'finished' && (
-                  <Button width={'100%'} disabled={claiming === true || hasClaimed} onClick={claimOfferingToken} marginY={'1rem'}>
-                    {hasClaimed? "You've Claimed" : "Claim Reward"}
+                  <Button
+                    width={'100%'}
+                    disabled={claiming === true || hasClaimed}
+                    onClick={claimOfferingToken}
+                    marginY={'1rem'}
+                  >
+                    {hasClaimed ? "You've Claimed" : 'Claim Reward'}
                   </Button>
                 )}
               </>

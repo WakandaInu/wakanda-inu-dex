@@ -302,7 +302,7 @@ const IfoCard = ({ ifo, showtier = true }: { ifo: Ifo; showtier?: boolean }) => 
   }
 
   const fetchClaimedStatus = async () => {
-    const result = await getClaimedStatus(account)
+    const result = await getClaimedStatus()
     setHasClaimed(result)
   }
 
